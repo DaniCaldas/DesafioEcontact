@@ -44,7 +44,7 @@ export default function ListarTarefas(){
     }
 
     function MudarEstadoTarefa(tarefaID: string, estado: boolean) {
-            axios.patch(api + "/" + tarefaID, {
+            axios.patch(`${api}/${tarefaID}`, {
                 isDone: estado
             }).then(() => { 
                 console.log("Tarefa Feita "+ tarefaID)
@@ -78,10 +78,13 @@ export default function ListarTarefas(){
                 {
                     tarefas.map((tarefa) => (
                         <Li key={tarefa.id}>
-                            <LabelCheckList key={tarefa.id} id={tarefa.id} htmlFor="togle-list" className="togle-list">
+                            <LabelCheckList key={tarefa.id} id={tarefa.id} htmlFor={`togle-list-${tarefa.id}`} className="togle-list">
                                 {
                                     !tarefa.isDone ? (
-                                        <CheckList className="togle-list" value="togle-list" id="togle-list" onClick={()=>MudarEstadoTarefa(tarefa.id, true)}/>
+                                        <CheckList className="togle-list" 
+                                        value={`togle-list-${tarefa.id}`}
+                                        id={`togle-list-${tarefa.id}`} 
+                                        onClick={()=>MudarEstadoTarefa(tarefa.id, true)}/>
                                     ): (
                                         <SpanCheckList onClick={()=>MudarEstadoTarefa(tarefa.id, false)} icon={faCircleCheck}/>
                                     ) 
