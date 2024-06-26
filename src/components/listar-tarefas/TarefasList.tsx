@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Ul, Li,LabelCheckList, CheckList, SpanCheckList, TextList, Icon, DeleteTarefa} from '../../style'
+import { Li,LabelCheckList, CheckList, SpanCheckList, TextList, DeleteTarefa, InputEdicao} from '../../style'
 import {faCircleCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 
@@ -8,13 +8,19 @@ interface TarefasType{
     title: string;
     isDone: boolean;
 }
-interface DeleteButtonType{
-    opacity:number;
-    id:string;
+
+interface TarefasListTypes{
+    tarefasID: string
+    tarefaTitle: string
+    tarefaIsDone: boolean
+    setTarefas:React.Dispatch<React.SetStateAction<TarefasType[]>>
+    tarefas: TarefasType[]
 }
 
-const TarefasList = (tarefas: TarefasType[], setTarefas:React.Dispatch<React.SetStateAction<TarefasType[]>>) => {
-    const [opacity, setOpacity] = useState<number>(0);
+function TarefasList({tarefasID, tarefaTitle, tarefaIsDone, setTarefas, tarefas }: TarefasListTypes){
+    const [opacity, setOpacity] = useState(0);
+    const [modoEdicao, setModoEdicao] = useState(false)
+    const [novaTarefa, setNovaTarefa] = useState('')
     
     var api = "http://localhost:3000/todos/";
 
@@ -28,38 +34,71 @@ const TarefasList = (tarefas: TarefasType[], setTarefas:React.Dispatch<React.Set
         }
         )
       }
+  
+    function DeletarTarefa(TarefaID: string){
+        axios.delete(`${api}${TarefaID}`)
+        .then(() => console.log('Tarefa Apagada!'))
+        .catch((error) => console.log(error))
+    }
+
+    function EditarTarefa(tarefa: string){
+        axios.patch(`${api}${tarefasID}`,{
+            title: tarefa
+        })
+        .then(() => console.log('Tarefa Editada!'))
+        .catch((error) => console.log(error))
+    }
+
+    function handleInputChange(e: React.ChangeEvent<HTMLInputElement>){
+        setNovaTarefa(e.target.value)
+    }
 
     return(
-        <Ul>
-        { 
-            tarefas.map((tarefa) => (
-                <Li key={tarefa.id} onMouseEnter={()=>setOpacity(1)} onMouseLeave={()=>setOpacity(0)}>
-                    <LabelCheckList key={tarefa.id} id={tarefa.id} htmlFor={`togle-list-${tarefa.id}`} className="togle-list">
+        <Li key={`tarefa-${tarefasID}`} id={`tarefa-${tarefasID}`} 
+        onMouseEnter={()=> {setOpacity(1)}} 
+        onMouseLeave={()=>setOpacity(0)}
+        onDoubleClick={() => {
+                setModoEdicao(!modoEdicao)
+                setNovaTarefa(tarefaTitle)
+            }
+        }
+        >
+            {
+                modoEdicao ? (
+                    <InputEdicao
+                        value={novaTarefa}
+                        onChange={handleInputChange}
+                        onKeyUp={
+                            (e: React.KeyboardEvent) => {
+                                if (e.key === 'Enter') {
+                                    EditarTarefa(novaTarefa)
+                                    setModoEdicao(!modoEdicao)
+                            }}
+                        } 
+                    />
+                ):( 
+                <>    
+                    <LabelCheckList key={tarefasID} id={tarefasID} htmlFor={`togle-list-${tarefasID}`} className="togle-list">
                         {
-                            tarefa.isDone === false ? (
+                            tarefaIsDone === false ? (
                                 <CheckList className="togle-list" 
-                                value={`togle-list-${tarefa.id}`}
-                                id={`togle-list-${tarefa.id}`} 
-                                onClick={()=>MudarEstadoTarefa(tarefa.id, true)}/>
+                                value={`togle-list-${tarefasID}`}
+                                id={`togle-list-${tarefasID}`} 
+                                onClick={()=>MudarEstadoTarefa(tarefasID, true)}/>
                             ): (
-                                <SpanCheckList onClick={()=>MudarEstadoTarefa(tarefa.id, false)} icon={faCircleCheck}/>
+                                <SpanCheckList onClick={()=>MudarEstadoTarefa(tarefasID, false)} icon={faCircleCheck}/>
                             ) 
                         }
                     </LabelCheckList>
-                    <TextList>
-                        {tarefa.title}
-                    </TextList>
-                    <DeleteTarefas id={tarefa.id} opacity={opacity}></DeleteTarefas>
-                </Li>
-            ))
-        }
-        </Ul>
-    )
-}
 
-const DeleteTarefas = ({id, opacity}: DeleteButtonType) =>{
-    return(
-        <DeleteTarefa key={id} id={id} opacity={opacity} icon={faXmark}/>
+                        <TextList>
+                            {tarefaTitle}
+                        </TextList>
+                    <DeleteTarefa onClick={() => DeletarTarefa(tarefasID)} values={`tarefa-${tarefasID}`} id={`tarefa-${tarefasID}`} opacity={opacity} icon={faXmark}>
+                    </DeleteTarefa>
+                </>    
+            )}
+        </Li>
     )
 }
 

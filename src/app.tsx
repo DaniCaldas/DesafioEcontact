@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {CheckAllButton, Container, Input, LabelCheckbox, CheckBoxContainer, Icon, ContainerList, ListMethods, ButtonsMehotds, Titulo, AnimationButton, ButtonClear, CountItemsLeft, Methods} from "./style"
+import {CheckAllButton, Container, Input,Ul, LabelCheckbox, CheckBoxContainer, Icon, ContainerList, ListMethods, ButtonsMehotds, Titulo, AnimationButton, ButtonClear, CountItemsLeft, Methods} from "./style"
 import axios from "axios";
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import {Link, Route,BrowserRouter as Router, Routes } from "react-router-dom";
@@ -10,9 +10,12 @@ interface TarefasType{
     title: string;
     isDone: boolean;
 }
+interface TarefasListType{
+  tarefas: TarefasType[]
+  setTarefas:  React.Dispatch<React.SetStateAction<TarefasType[]>>
+}
 
 export default function ListarTarefas(){
-    
     var api = "http://localhost:3000/todos/";
 
     const [tarefa, setTarefa] = useState("");
@@ -80,11 +83,13 @@ export default function ListarTarefas(){
         <Container>
             <ContainerList>
                 <Input 
+                placeholder="What needs to be done?"
                 onChange={(text: React.ChangeEvent<HTMLInputElement>) =>{setTarefa(text.target.value)}}
                 onKeyUp={
                     (e: React.KeyboardEvent) => {
-                        if (e.key == 'Enter') {
+                        if (e.key === 'Enter') {
                             CriarTarefa(tarefa)
+                            
                     }}
                 } 
                 type="text"/>  
@@ -106,38 +111,56 @@ export default function ListarTarefas(){
 
                 {/* ROTAS */}
                   <Routes>
-                    <Route path="/" element={TarefasList(tarefas, setTarefas)}></Route>
-                    <Route path="/active" element={TarefasList(active, setTarefas)}></Route>
-                    <Route path="/completed" element={TarefasList(completed, setTarefas)}></Route>
+                    <Route path="/" element={<Tarefas tarefas={tarefas} setTarefas={setTarefas}/>}></Route>
+                    <Route path="/active" element={<Tarefas tarefas={active} setTarefas={setTarefas}/>}></Route>
+                    <Route path="/completed" element={<Tarefas tarefas={completed} setTarefas={setTarefas}/>}></Route>
                   </Routes>
 
                 <ListMethods>
                   <CountItemsLeft>{active.length} item left!</CountItemsLeft>
                   <Methods>
-                  <Link to='/'>
-                    <ButtonsMehotds onClick={() => {
-                      setAnimationLeft(-3)
-                      setWidthButton("36px")
-                      }}>All</ButtonsMehotds>
-                  </Link>
-                  <Link to='/active'>
-                    <ButtonsMehotds onClick={() => {
-                      setAnimationLeft(58)
-                      setWidthButton("52px")
-                    }}>Active</ButtonsMehotds>
-                  </Link>
-                  <Link to='/completed'>
-                    <ButtonsMehotds
-                    onClick={() => {
-                      setAnimationLeft(142)
-                      setWidthButton("82px")
-                    }}>Completed</ButtonsMehotds>
-                  </Link>
-                  <AnimationButton width={widthButton} left={animationLeft}></AnimationButton>
-                  <ButtonClear onClick={() => ExcluirTodosConcluidos()}>Clear Completed</ButtonClear>
+                    <Link to='/'>
+                      <ButtonsMehotds onClick={() => {
+                        setAnimationLeft(-3)
+                        setWidthButton("36px")
+                        }}>All</ButtonsMehotds>
+                    </Link>
+                    <Link to='/active'>
+                      <ButtonsMehotds onClick={() => {
+                        setAnimationLeft(58)
+                        setWidthButton("52px")
+                      }}>Active</ButtonsMehotds>
+                    </Link>
+                    <Link to='/completed'>
+                      <ButtonsMehotds
+                      onClick={() => {
+                        setAnimationLeft(136)
+                        setWidthButton("82px")
+                      }}>Completed</ButtonsMehotds>
+                    </Link>
+                    <AnimationButton width={widthButton} left={animationLeft}></AnimationButton>
+                    <ButtonClear onClick={() => ExcluirTodosConcluidos()}>Clear Completed</ButtonClear>
                   </Methods>
                 </ListMethods>
         </Container>
       </Router>
     );
+}
+
+const Tarefas = ({tarefas, setTarefas}: TarefasListType) => {
+    return(
+      <Ul>
+        {
+            tarefas.map((tarefa)=>(
+              <TarefasList 
+              tarefasID={tarefa.id}
+              tarefaTitle={tarefa.title}
+              tarefaIsDone={tarefa.isDone} 
+              setTarefas={setTarefas}
+              tarefas={tarefas}
+              />
+            ))
+        }
+      </Ul>
+    )
 }

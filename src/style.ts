@@ -18,8 +18,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: 'arial';
-    width: 81vh;
+    width: 30em;
     box-shadow: 0px 29px 25px 0px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1);
 `;
 
@@ -31,13 +30,14 @@ const ContainerList = styled.div`
 
 const Titulo = styled.h1`
     font-size: 50px;
+    text-align: center;
 `;
 
 const Input = styled.input`
     padding-left: 12px;
     padding-right: 7px;
-    width: 33.7vw;
-    height: 10vh;
+    width: 16.5em;
+    height: 2.7em;
     font-size: 25px;
     border-left: none;
     border-bottom:1px solid #ededed ;
@@ -74,8 +74,8 @@ const LabelCheckbox = styled.label`
 `;
 
 const CheckBoxContainer = styled.div`
-   width: 40px;
-   height: 74px;
+   width: 47px;
+   height: 70px;
 `;
 
 const CheckAllButton = styled.input.attrs({type:'checkbox'})`
@@ -84,13 +84,15 @@ const CheckAllButton = styled.input.attrs({type:'checkbox'})`
 
 
 const Ul = styled.ul`
-margin-top: 1px;
-margin-left: -37px;
+    margin-top: 0px;
+    width: 100%;
 `;
 
 const Li = styled.li`
-    width: 37.8vw;
+    margin-left: -20px;
+    width: 29.4em;
     height: 9vh;
+    padding-left: 0.5em;
     display: flex;
     flex-direction: row;
     border:1px solid #ededed;
@@ -127,7 +129,7 @@ const ListMethods = styled.div`
     align-items: center;
     justify-content: center;
     background-color: #FFFFFF;
-    width: 38vw;
+    width: 30em;
     height: 9vh;
     margin-top: -15px;
 `;
@@ -137,7 +139,8 @@ const Methods = styled.div`
     flex-direction: row;
     align-items: center;
     column-gap: 30px;
-    margin-left: 60px;
+    margin-left: 20px;
+    font-size: 15px;
 `;  
 
 const ButtonsMehotds = styled.button`
@@ -146,7 +149,7 @@ const ButtonsMehotds = styled.button`
     width: 100%;
     height: 5vh;
     background-color: transparent;
-    font-size: 15px;
+    font-size: 14px;
     &:hover{
         border: 1px solid #DB7676;
         border-radius: 5px;
@@ -165,7 +168,7 @@ const ButtonClear = styled.button`
     width: 100%;
     height: 5vh;
     background-color: transparent;
-    font-size: 15px;
+    font-size: 14px;
     &:hover{
         text-decoration: underline;
     }
@@ -174,7 +177,7 @@ const ButtonClear = styled.button`
 const AnimationButton = styled.div<ButtonType>`
     position: absolute;
     height: 28px;
-    top: 4px;
+    top: 1px;
     z-index: 0;
     background-color: transparent;
     border: 1px solid #DB7676;
@@ -185,16 +188,34 @@ const AnimationButton = styled.div<ButtonType>`
 `;
 
 const CountItemsLeft = styled.p`
-margin-left: -50px;
+    font-size: 14px;
 `;
 
+const LabelDeleteTarefa = styled.label`
+`;
 
 const DeleteTarefa = styled(FontAwesomeIcon)<ButtonDeleteType>`
-opacity:${(props) => props.opacity};
-transition: 100ms;
-position: absolute;
-right: 500px;
+    opacity:${(props) => props.opacity};
+    transition: 100ms;
+    position: absolute;
+    right: 500px;
 `;
+
+const InputEdicao = styled.input.attrs({type: 'text'})`
+    padding-left: 14px;
+    padding-right: 7px;
+    width: 19em;
+    height: 2em;
+    font-size: 25px;
+    border-left: none;
+    border-bottom:1px solid #ededed ;
+    border-top:1px solid #ededed ;
+    border-right:1px solid #ededed ;
+    &:active{
+        border-color: red;
+    }
+`;
+
 export{
     Input,
     Titulo,
@@ -217,5 +238,7 @@ export{
     AnimationButton,
     ButtonClear,
     CountItemsLeft,
-    DeleteTarefa
+    DeleteTarefa,
+    LabelDeleteTarefa,
+    InputEdicao
 }
